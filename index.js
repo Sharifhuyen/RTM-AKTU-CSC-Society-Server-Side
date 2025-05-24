@@ -63,6 +63,13 @@ async function run() {
             console.log("blogs get successfully");
         })
 
+        app.get("/user", async (req, res) => {
+            const email = req.query.email;
+            const user = await users.findOne({ email }); // Adjust as needed
+            if (!user) return res.status(404).json({ message: "User not found" });
+            res.json(user);
+        });
+
 
         app.post('/event', async (req, res) => {
             const newEvent = req.body;
@@ -253,7 +260,6 @@ async function run() {
         });
 
 
-        const { ObjectId } = require('mongodb');
 
         app.delete('/galleries/:id', async (req, res) => {
             const id = req.params.id;
@@ -267,30 +273,6 @@ async function run() {
                 console.error('Error deleting gallery item:', error);
                 res.status(500).json({ error: 'Failed to delete gallery item' });
             }
-        });
-
-
-
-
-
-        app.put('/users', async (req, res) => {
-            const id = req.body._id;
-            console.log(id);
-            const query = { _id: ObjectId(id) };
-            const options = { upsert: true };
-
-            const updateDoc = {
-                $set:
-                {
-                    role: "Admin"
-                }
-
-            };
-
-            const result = await users.updateOne(query, updateDoc);
-            // console.log("got new user", req.body);
-            console.log("package approved", result);
-            res.json(result);
         });
 
 
