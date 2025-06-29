@@ -8,12 +8,24 @@ const { MongoClient, ServerApiVersion } = require('mongodb');
 
 
 
+const allowedOrigins = [
+  'https://iridescent-seahorse-ba03fa.netlify.app',
+  'http://localhost:5173'
+];
+
 app.use(cors({
-    origin: 'https://iridescent-seahorse-ba03fa.netlify.app',
-    methods: 'GET,POST,PUT,DELETE',
-    allowedHeaders: 'Content-Type,Authorization',
-    credentials: true
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: 'GET,POST,PUT,DELETE',
+  allowedHeaders: 'Content-Type,Authorization',
+  credentials: true
 }));
+
 
 app.use(express.json())
 
